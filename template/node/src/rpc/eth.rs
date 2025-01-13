@@ -94,9 +94,8 @@ where
 	EC: EthConfig<B, C>,
 {
 	use fc_rpc::{
-		pending::AuraConsensusDataProvider, Debug, DebugApiServer, Eth, EthApiServer, EthDevSigner,
-		EthFilter, EthFilterApiServer, EthPubSub, EthPubSubApiServer, EthSigner, Net, NetApiServer,
-		Web3, Web3ApiServer,
+		Debug, DebugApiServer, Eth, EthApiServer, EthDevSigner, EthFilter, EthFilterApiServer,
+		EthPubSub, EthPubSubApiServer, EthSigner, Net, NetApiServer, Web3, Web3ApiServer,
 	};
 	#[cfg(feature = "txpool")]
 	use fc_rpc::{TxPool, TxPoolApiServer};
@@ -127,28 +126,28 @@ where
 		signers.push(Box::new(EthDevSigner::new()) as Box<dyn EthSigner>);
 	}
 
-	io.merge(
-		Eth::<B, C, P, CT, BE, A, CIDP, EC>::new(
-			client.clone(),
-			pool.clone(),
-			graph.clone(),
-			converter,
-			sync.clone(),
-			signers,
-			storage_override.clone(),
-			frontier_backend.clone(),
-			is_authority,
-			block_data_cache.clone(),
-			fee_history_cache,
-			fee_history_cache_limit,
-			execute_gas_limit_multiplier,
-			forced_parent_hashes,
-			pending_create_inherent_data_providers,
-			Some(Box::new(AuraConsensusDataProvider::new(client.clone()))),
-		)
-		.replace_config::<EC>()
-		.into_rpc(),
-	)?;
+	// io.merge(
+	// 	Eth::<B, C, P, CT, BE, A, CIDP, EC>::new(
+	// 		client.clone(),
+	// 		pool.clone(),
+	// 		graph.clone(),
+	// 		converter,
+	// 		sync.clone(),
+	// 		signers,
+	// 		storage_override.clone(),
+	// 		frontier_backend.clone(),
+	// 		is_authority,
+	// 		block_data_cache.clone(),
+	// 		fee_history_cache,
+	// 		fee_history_cache_limit,
+	// 		execute_gas_limit_multiplier,
+	// 		forced_parent_hashes,
+	// 		pending_create_inherent_data_providers,
+	// 		Some(Box::new(AuraConsensusDataProvider::new(client.clone()))),
+	// 	)
+	// 	.replace_config::<EC>()
+	// 	.into_rpc(),
+	// )?;
 
 	if let Some(filter_pool) = filter_pool {
 		io.merge(

@@ -224,6 +224,14 @@ pub fn run() -> sc_cli::Result<()> {
 				cmd.run(client, frontier_backend)
 			})
 		}
+		Some(Subcommand::BenchmarkBlockExecution(cmd)) => {
+			let runner = cli.create_runner(cmd)?;
+			runner.sync_run(|mut config| {
+				let (client, _, _, _, _) = service::new_chain_ops(&mut config, &cli.eth)?;
+				cmd.run(client);
+				Ok(())
+			})
+		}
 		None => {
 			let runner = cli.create_runner(&cli.run)?;
 			runner.run_node_until_exit(|config| async move {

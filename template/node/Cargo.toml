@@ -79,6 +79,12 @@ fp-dynamic-fee = { workspace = true, features = ["default"] }
 fp-evm = { workspace = true, features = ["default"] }
 fp-rpc = { workspace = true, features = ["default"] }
 frontier-template-runtime = { workspace = true, features = ["std"] }
+pallet-ethereum = { workspace = true }
+pallet-evm = { workspace = true }
+ethereum = { workspace = true, features = ["with-codec"] }
+libsecp256k1 = { workspace = true, features = ["static-context", "hmac"] }
+rlp = { workspace = true }
+sc-block-builder = { workspace = true }
 
 [build-dependencies]
 substrate-build-script-utils = { workspace = true }

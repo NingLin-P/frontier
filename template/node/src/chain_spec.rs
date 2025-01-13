@@ -7,7 +7,7 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_consensus_grandpa::AuthorityId as GrandpaId;
 #[allow(unused_imports)]
 use sp_core::ecdsa;
-use sp_core::{Pair, Public, H160, U256};
+use sp_core::{hashing::keccak_256, Pair, Public, H160, H256, U256};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 // Frontier
 use frontier_template_runtime::{AccountId, Balance, SS58Prefix, Signature, WASM_BINARY};
@@ -52,6 +52,15 @@ fn properties() -> Properties {
 
 const UNITS: Balance = 1_000_000_000_000_000_000;
 
+fn address_build(seed_number: u64) -> AccountId {
+	let mut seed = [0u8; 32];
+	seed[0..8].copy_from_slice(&seed_number.to_be_bytes());
+	let private_key = H256::from_slice(&seed);
+	let secret_key = libsecp256k1::SecretKey::parse_slice(&private_key[..]).unwrap();
+	let public_key = &libsecp256k1::PublicKey::from_secret_key(&secret_key).serialize()[1..65];
+	H160::from(H256::from(keccak_256(public_key))).into()
+}
+
 pub fn development_config(enable_manual_seal: bool) -> ChainSpec {
 	ChainSpec::builder(WASM_BINARY.expect("WASM not available"), Default::default())
 		.with_name("Development")
@@ -63,6 +72,7 @@ pub fn development_config(enable_manual_seal: bool) -> ChainSpec {
 			AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
 			// Pre-funded accounts
 			vec![
+				address_build(1u64),
 				AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")), // Alith
 				AccountId::from(hex!("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0")), // Baltathar
 				AccountId::from(hex!("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc")), // Charleth
